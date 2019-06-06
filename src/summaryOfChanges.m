@@ -3,7 +3,7 @@ function summaryOfChanges(root, printPath, printFile)
 %
 %   Inputs:
 %       root        xmlcomp.Edits object.
-%       printPath   Whether the print the paths(1) or not(0). [Optional]
+%       printPath   Whether to print the paths(1) or not(0). [Optional]
 %       printFile   Whether to create a file with the summary(1) or not(0).
 %                   File is created in the current directory, with name:
 %                   model1_VS_model2.txt. [Optional]
@@ -36,6 +36,7 @@ function summaryOfChanges(root, printPath, printFile)
     % Print sections
     allElements(root, printPath, file);
     allBlocks(root, printPath, file);
+    allInports(root, printPath, file);
     allOutports(root, printPath, file);
     allSubsystems(root, printPath, file);
     allLines(root, printPath, file);
@@ -44,6 +45,18 @@ function summaryOfChanges(root, printPath, printFile)
     if file
         fclose(file);
     end
+end
+
+function printQuery(root, query, printPath, file)
+    [~,p] = find_node(root, 'NodeType', 'block', query{:});
+    % Print query
+    if file
+        fprint(file, '%s\n', query)
+    else
+        fprint('%s\n', query)
+    end
+    % Print paths
+    printPaths(p, file);
 end
 
 function allElements(root, printPath, file)
@@ -159,6 +172,66 @@ function allBlocks(root, printPath, file)
         end
 
         [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified');
+        fprintf('\nMODIFIED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+    end
+end
+
+function allInports(root, printPath, file)
+    if file
+        fprintf(file, '\n-------------\n');
+        fprintf(file, 'Inports\n');
+        fprintf(file, '-------------\n');
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport');
+        fprintf(file, '\nADDED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport');
+        fprintf(file, '\nDELETED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport');
+        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport');
+        fprintf(file, '\nMODIFIED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+    else
+        fprintf('\n-------------\n');
+        fprintf('Inports\n');
+        fprintf('-------------\n');
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport');
+        fprintf('\nADDED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport');
+        fprintf('\nDELETED: %d\n', length(p));
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport');
+        fprintf('\nRENAMED: %d\n', length(p)/2);
+        if printPath
+            printPaths(p, file)
+        end
+
+        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport');
         fprintf('\nMODIFIED: %d\n', length(p));
         if printPath
             printPaths(p, file)
@@ -349,7 +422,7 @@ function allLines(root, printPath, file)
 end
 
 function printPaths(p, file)
-% PRINTPATHS Prints a cell array of paths.
+% PRINTPATHS Print a cell array of paths.
     if file
         for i = 1:length(p)
             line = strrep(cell2mat(p(i)), newline, ' ');
