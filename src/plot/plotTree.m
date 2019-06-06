@@ -21,12 +21,13 @@ function h = plotTree(root)
     h = plot(G, 'Layout', 'layered', 'Direction', 'right', 'AssignLayers', 'asap', 'ShowArrows', 'off');
     
     % Visual improvements
+    title(t, 'Interpreter' ,'none');
     camroll(-90);
     set(gca,'xtick',[],'ytick',[])
     h.Marker = 's';
     h.MarkerSize = 8;
     
-    % Stop underscores from resulting in subscript
+        % Stop underscores from resulting in subscript
     try
         set(h, 'Interpreter' ,'none');
     catch
