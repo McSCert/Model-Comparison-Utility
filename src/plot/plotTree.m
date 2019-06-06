@@ -19,6 +19,7 @@ function h = plotTree(root)
     % Info on options: https://www.mathworks.com/help/matlab/ref/graph.plot.html
     figure
     h = plot(G, 'Layout', 'layered', 'Direction', 'right', 'AssignLayers', 'asap', 'ShowArrows', 'off');
+    set(h, 'Interpreter' ,'none'); % Stop underscores from resulting in subscript
     
     % Visual improvements
     title(t, 'Interpreter', 'none');
