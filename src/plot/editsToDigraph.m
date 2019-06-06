@@ -84,6 +84,11 @@ function [source, target] = createSourceTarget(root)
     % Add the root node
     source{end+1} = 'Edits';
     source{end+1} = 'Edits';
-    target{end+1} = 'Comparison Root (before)';
-    target{end+1} = 'Comparison Root (after)';
+    if verLessThan('Simulink', '8.9')
+        target{end+1} = 'SLX Comparison Root (before)';
+        target{end+1} = 'SLX Comparison Root (after)';
+    else
+        target{end+1} = 'Comparison Root (before)';
+        target{end+1} = 'Comparison Root (after)';
+    end
 end
