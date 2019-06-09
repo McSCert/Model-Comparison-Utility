@@ -66,34 +66,38 @@ function path = assemblePath(sys, node)
 %   Outputs:
 %       path    Path of the node.
 
+    % Get path within the tree first.
     basePath = getPathTree(node);
     
-    initPath1 = 'SLX Comparison Root/Simulink/System';
-    initPath2 = 'Comparison Root/Simulink';
-    if any(strcmp(basePath, {...
-        initPath1, ...
-        fileparts(initPath1), ...
-        fileparts(fileparts(initPath1)), ...
-        initPath2, ...
-        fileparts(initPath2)}))
+    % All valid paths representing a block start with one of the following:
+    initPath1 = 'SLX Comparison Root/Simulink/System/'; % For older MATLAB versions
+    initPath2 = 'Comparison Root/Simulink/'; % For newer MATLAB versions
+    
+    % Notes about invalid block paths:
+    %
+    % The following paths are invalid:
+    %   'SLX Comparison Root/Simulink/System'
+    %   'Comparison Root/Simulink'
+    %   'SLX Comparison Root/Simulink'
+    %   'SLX Comparison Root'
+    %   'Comparison Root'
+    % Paths starting with the following are invalid:
+    %   'Comparison Root/Model Configuration Sets'
+    %
+    % This is likely not comprehensive and may change in future versions of
+    % MATLAB.
+    
+    startIdx = regexp(basePath, ['^(' initPath1 '|' initPath2 ')'], 'end', 'once');
+    if isempty(startIdx)
+        % Path does not represent a block.
         path = '';
     else
-        startIdx = regexp(basePath, ['^(' initPath1 '|' initPath2 ')/'], 'end', 'once');
-        assert(~isempty(startIdx), 'Internal error. Bad assumption about xmlcomp.Node objects.')
+        % Path represents a block.
         startIdx = startIdx + 1;
         
         [~,name,~] = fileparts(sys);
         path = [name '/' basePath(startIdx:end)];
     end
-    
-%     if any(strcmp(node.Name, {'SLX Comparison Root', 'Comparison Root'}))
-%         path = ''; % Omit
-%     elseif any(strcmp(node.Name, {'Simulink', 'System'}))
-%         [~,name,~] = fileparts(sys);
-%         path = name; % Use actual model name
-%     else
-%         path = [assemblePath(sys, node.Parent) '/' node.Name];
-%     end
 end
 
 function pathafter = fixDuplicates(pathbefore)
@@ -159,18 +163,4 @@ function pathafter = fixDuplicates(pathbefore)
     else
         pathafter = pathbefore;
     end
-
-%     parts = strsplit(pathbefore, '/');
-%     path = '';
-%     
-%     idx = 1;
-%     while idx <= length(parts)
-%         path = [path parts(idx)];
-%         if strcmpi(parts(idx), 'Subsystem') || strcmpi(parts(idx), 'Simulink Function')
-%             idx = idx + 2; %Skip
-%         else
-%             idx = idx + 1;
-%         end
-%     end
-%     pathafter = strjoin(path, '/');
 end
