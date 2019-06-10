@@ -5,11 +5,14 @@ function summaryOfChanges(root, printPath, printFile)
 %       root        xmlcomp.Edits object.
 %       printPath   Whether to print the paths(1) or not(0). [Optional]
 %       printFile   Whether to create a file with the summary(1) or not(0).
-%                   File is created in the current directory, with name:
+%                   File is created in the current directory, with filename:
 %                   model1_VS_model2.txt. [Optional]
 %
 %   Outputs:
 %       N/A
+%
+%   Side Effects:
+%       File output or Command Window output.
 
     model1 = root.LeftFileName;
     model2 = root.RightFileName;
@@ -30,408 +33,78 @@ function summaryOfChanges(root, printPath, printFile)
         file = fopen(filename, 'wt');
     else
         filename = '';
-        file = '';
+        file = 1;
     end
 
-    % Print sections
-    allElements(root, printPath, file);
-    allBlocks(root, printPath, file);
-    allInports(root, printPath, file);
-    allOutports(root, printPath, file);
-    allSubsystems(root, printPath, file);
-    allLines(root, printPath, file);
+    % Queries to print
+    printQuery(root, {'ChangeType', 'added'}, printPath, file);
+    printQuery(root, {'ChangeType', 'deleted'}, printPath, file);
+    printQuery(root, {'ChangeType', 'renamed'}, printPath, file);
+    printQuery(root, {'ChangeType', 'modified'}, printPath, file);
+    
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'added'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified'}, printPath, file);
+    
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport'}, printPath, file);
+    
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'outport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'outport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'outport'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport'}, printPath, file);
+    
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem'}, printPath, file);
+    printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'subsystem'}, printPath, file);
+    
+%     [n, p] = find_node(root, 'BlockType', 'subsystem');
+%     subsystemModifiedContents = {};
+%     for i = 1:length(n)
+%         if isChildrenModified(n(i), root)
+%             subsystemModifiedContents{end+1} = char(p(i));
+%         end
+%     end
+%     subsystemModifiedContents = unique(subsystemModifiedContents);
+%     fprintf(file, 'BlockType, subsystem, containing modified: TOTAL %d\n', length(subsystemModifiedContents));
+%     printPaths(subsystemModifiedContents, file)
+    
+    printQuery(root, {'NodeType', 'line', 'ChangeType', 'added'}, printPath, file);
+    printQuery(root, {'NodeType', 'line', 'ChangeType', 'deleted'}, printPath, file);
+    printQuery(root, {'NodeType', 'line', 'ChangeType', 'renamed'}, printPath, file);
+    printQuery(root, {'NodeType', 'line', 'ChangeType', 'modified'}, printPath, file);
 
     % Close file
-    if file
+    if ~(file == 1)
         fclose(file);
     end
 end
 
 function printQuery(root, query, printPath, file)
+    % Get data
     [~,p] = find_node(root, 'NodeType', 'block', query{:});
+    n = length(p);
+    
+    % Construct formatting for query
+    format = repmat('%s, ', 1, length(query));
+    format = format(1:end-2); % Take off last comma and space
+    
     % Print query
-    if file
-        fprint(file, '%s\n', query)
-    else
-        fprint('%s\n', query)
-    end
-    % Print paths
+    fprintf(file, format, query{:});
+    fprintf(file, ' -- TOTAL %d\n', n);
+
+    % Print paths    
     printPaths(p, file);
-end
-
-function allElements(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'All Elements\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'ChangeType', 'added');
-        fprintf(file, '\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'deleted');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'renamed');
-        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'modified');
-        fprintf(file, '\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    else
-        fprintf('\n-------------\n');
-        fprintf('All Elements\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'ChangeType', 'added');
-        fprintf('\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'deleted');
-        fprintf('\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'renamed');
-        fprintf('\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'ChangeType', 'modified');
-        fprintf('\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    end
-end
-
-function allBlocks(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'All Blocks\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added');
-        fprintf(file, '\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed');
-        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified');
-        fprintf(file, '\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    else
-        fprintf('\n-------------\n');
-        fprintf('All Blocks\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added');
-        fprintf('\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted');
-        fprintf('\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed');
-        fprintf('\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified');
-        fprintf('\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    end
-end
-
-function allInports(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'Inports\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport');
-        fprintf(file, '\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport');
-        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport');
-        fprintf(file, '\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    else
-        fprintf('\n-------------\n');
-        fprintf('Inports\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport');
-        fprintf('\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport');
-        fprintf('\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport');
-        fprintf('\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport');
-        fprintf('\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    end
-end
-
-function allOutports(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'Outports\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'outport');
-        fprintf(file, '\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'outport');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'outport');
-        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport');
-        fprintf(file, '\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    else
-        fprintf('\n-------------\n');
-        fprintf('Outports\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'outport');
-        fprintf('\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'outport');
-        fprintf('\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'outport');
-        fprintf('\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport');
-        fprintf('\nMODIFIED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-    end
-end
-
-function allSubsystems(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'Subsystems\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem');
-        fprintf(file, '\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem');
-        fprintf(file, '\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [n, p] = find_node(root, 'BlockType', 'subsystem');
-        subsystemModifiedContents = {};
-        for i = 1:length(n)
-            if isChildrenModified(n(i), root)
-                subsystemModifiedContents{end+1} = char(p(i));
-            end
-        end
-        subsystemModifiedContents = unique(subsystemModifiedContents);
-        fprintf(file, '\nCONTAINS MODIFIED CHILDREN: %d\n', length(subsystemModifiedContents));
-        if printPath
-            printPaths(subsystemModifiedContents, file)
-        end
-    else
-        fprintf('\n-------------\n');
-        fprintf('Subsystems\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem');
-        fprintf('\nADDED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem');
-        fprintf('\nDELETED: %d\n', length(p));
-        if printPath
-            printPaths(p, file)
-        end
-
-        [~,p] = find_node(root, 'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem');
-        fprintf('\nRENAMED: %d\n', length(p)/2);
-        if printPath
-            printPaths(p, file)
-        end
-
-        [n, p] = find_node(root, 'BlockType', 'subsystem');
-        subsystemModifiedContents = {};
-        for i = 1:length(n)
-            if isChildrenModified(n(i), root)
-                subsystemModifiedContents{end+1} = char(p(i));
-            end
-        end
-        subsystemModifiedContents = unique(subsystemModifiedContents);
-        fprintf('\nCONTAINS CHILDREN THAT CONTAIN CHANGES: %d\n', length(subsystemModifiedContents));
-        if printPath
-            printPaths(subsystemModifiedContents, file)
-        end
-    end
-end
-
-function allLines(root, printPath, file)
-    if file
-        fprintf(file, '\n-------------\n');
-        fprintf(file, 'All Lines\n');
-        fprintf(file, '-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'added');
-        fprintf(file, '\nADDED: %d\n', length(p));
-         if printPath
-            printPaths(p, file)
-         end
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'deleted');
-        fprintf(file, '\nDELETED: %d\n', length(p));
-          if printPath
-            printPaths(p, file)
-          end
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'modified');
-        fprintf(file, '\nMODIFIED: %d\n', length(p));
-         if printPath
-            printPaths(p, file)
-         end
-    else
-        fprintf('\n-------------\n');
-        fprintf('All Lines\n');
-        fprintf('-------------\n');
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'added');
-        fprintf('\nADDED: %d\n', length(p));
-         if printPath
-            printPaths(p, file)
-         end
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'deleted');
-        fprintf('\nDELETED: %d\n', length(p));
-          if printPath
-            printPaths(p, file)
-          end
-
-        [~,p] = find_node(root, 'NodeType', 'line', 'ChangeType', 'modified');
-        fprintf('\nMODIFIED: %d\n', length(p));
-         if printPath
-            printPaths(p, file)
-         end
-    end
 end
 
 function printPaths(p, file)
 % PRINTPATHS Print a cell array of paths.
-    if file
-        for i = 1:length(p)
-            line = strrep(cell2mat(p(i)), newline, ' ');
-            fprintf(file, '\t%s\n', line);
-        end
-    else
-        for i = 1:length(p)
-            line =  strrep(cell2mat(p(i)), newline, ' ');
-            fprintf('\t%s\n', line);
-        end
+    for i = 1:length(p)
+        line = strrep(cell2mat(p(i)), newline, ' ');
+        fprintf(file, '\t%s\n', line);
     end
 end
