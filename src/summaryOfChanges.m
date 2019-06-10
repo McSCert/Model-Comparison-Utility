@@ -97,8 +97,10 @@ function printQuery(root, query, printPath, file)
     fprintf(file, format, query{:});
     fprintf(file, ' -- TOTAL %d\n', n);
 
-    % Print paths    
-    printPaths(p, file);
+    % Print paths  
+    if printPath
+        printPaths(p, file);
+    end
 end
 
 function printPaths(p, file)
