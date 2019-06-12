@@ -57,19 +57,17 @@ function hilite_system_notopen(sys,hilite,varargin)
 %   scalar --> vector of length 2 with repeate of scalar (a hack, yes, but
 %              it does make things simpler...)
 %
-if ischar(sys),
+if ischar(sys)
   sys = { sys, sys };
-elseif iscell(sys) && (length(sys) == 1),
+elseif iscell(sys) && (length(sys) == 1)
   sys = { cell2mat(sys(1)), cell2mat(sys(1)) };
-elseif isreal(sys) && (length(sys) == 1),
+elseif isreal(sys) && (length(sys) == 1)
   sys = [sys sys];
 end
 
-%
-% It's easier to use handles instead of strings, it simplifies things
-% in the code below
-%
-sys = get_param(sys,'Handle');
+
+% Use handles instead of strings. It simplifies the code below
+sys = get_param(sys, 'Handle');
 sys = [ sys{:} ];
 
 % Unfortunately, port highlighting is currently not
@@ -79,7 +77,7 @@ ports = find(strcmp(get_param(sys,'type'),'port'));
 if(~isempty(ports))
     portLines =  get_param(sys(ports),'Line');
     if(~eq(portLines{1}, -1) && ~eq(portLines{2},-1))
-        if iscell(portLines),
+        if iscell(portLines)
           sys(ports) = [ portLines{:} ];
         else
           sys(ports) = portLines;
@@ -89,14 +87,11 @@ if(~isempty(ports))
     end
 end
 
-%
+
 % Construct a list of parent windows for each of the specified objects
-%
 parents = get_param(sys,'Parent');
 
-%
-% Weed out objects with no parent, they're models
-%
+% Weed out objects with no parent. They are models
 mdls = find(strcmp(parents,''));
 parents(mdls) = [];
 sys(mdls) = [];
@@ -104,7 +99,7 @@ sys(mdls) = [];
 %
 % Set the HiliteAncestors property for each of the blocks
 %
-if nargin == 1,
+if nargin == 1
   hilite = 'on';
 end
 
@@ -113,7 +108,7 @@ hiliteArgs = { 'HiliteAncestors', hilite };
 %
 % For each 'sys', set the HiliteAncestors property
 %
-for i = 1:length(sys),
+for i = 1:length(sys)
   set_param(sys(i), hiliteArgs{:},varargin{:});
 end
 

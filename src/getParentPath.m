@@ -1,7 +1,7 @@
 function path = getParentPath(node, sys)
 % GETPARENTPATH Get the path of the parent element containing the node 
 %   in a model (usually a subsystem, or the root system). This is non-trivial for
-%   node representing lines, hence this function.
+%   nodes representing lines, hence this function.
 % 
 %   Inputs:
 %       node    xmlcomp.Node object.

@@ -9,7 +9,6 @@ function n = treeNumNodes(node)
 %       n       Number of nodes.
     
     if isa(node, 'xmlcomp.Node')
-        %fprintf("%s\n", strrep(node.Name, newline, ' ')); % Print name
         n = 1;
         if ~hasChildren(node)
             return
@@ -19,7 +18,6 @@ function n = treeNumNodes(node)
             n = n + treeNumNodes(node.Children(i));
         end
     elseif isa(node, 'xmlcomp.Edits')
-        %fprintf("xmlcomp.Edits\n"); % Print name
         n = 0;
         n = n + treeNumNodes(node.LeftRoot);
         n = n + treeNumNodes(node.RightRoot);

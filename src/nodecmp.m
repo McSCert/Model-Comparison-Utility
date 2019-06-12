@@ -42,8 +42,6 @@ function sameNodes = nodecmp(node1, node2)
     if ~isempty(node1.Parameters) && ~isempty(node2.Parameters)
         params1 = {node1.Parameters.Name};
         params2 = {node2.Parameters.Name};
-        %values1 = {node1.Parameters.Value};
-        %values2 = {node2.Parameters.Value};
 
         % Keep track of what params were checked for node2.
         % Nodes may have the same number of params, but different params.
@@ -52,7 +50,7 @@ function sameNodes = nodecmp(node1, node2)
         % Compare for same parameters (but not values)
         for i = 1:length(params1)
             [member, idx] = ismember(params1(i), params2);
-            if member %&& strcmp(values1(i), values2(idx))
+            if member
                 unchecked2(idx) = 0; % Mark as checked
             else
                 return

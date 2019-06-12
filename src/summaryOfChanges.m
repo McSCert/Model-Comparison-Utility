@@ -41,43 +41,38 @@ function summaryOfChanges(root, printPath, printFile)
     printQuery(root, {'ChangeType', 'deleted'}, printPath, file);
     printQuery(root, {'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'ChangeType', 'modified'}, printPath, file);
+    fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified'}, printPath, file);
+    fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport'}, printPath, file);
+    fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport'}, printPath, file);
+    fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'subsystem'}, printPath, file);
-    
-%     [n, p] = find_node(root, 'BlockType', 'subsystem');
-%     subsystemModifiedContents = {};
-%     for i = 1:length(n)
-%         if isChildrenModified(n(i), root)
-%             subsystemModifiedContents{end+1} = char(p(i));
-%         end
-%     end
-%     subsystemModifiedContents = unique(subsystemModifiedContents);
-%     fprintf(file, 'BlockType, subsystem, containing modified: TOTAL %d\n', length(subsystemModifiedContents));
-%     printPaths(subsystemModifiedContents, file)
+    fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'added'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'deleted'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'modified'}, printPath, file);
-
+    fprintf(file, '\n');
+    
     % Close file
     if ~(file == 1)
         fclose(file);
@@ -85,6 +80,20 @@ function summaryOfChanges(root, printPath, printFile)
 end
 
 function printQuery(root, query, printPath, file)
+% PRINTQUERY Perform a query and print.
+%
+%   Inputs:
+%       root        xmlcomp.Edits object.
+%       query       Cell array of find_node constriant pairs.
+%       printPath   Whether to print the paths(1) or not(0). [Optional]
+%       file        Filename or 1 for output to Command Window.
+%
+%   Outputs:
+%       N/A
+%
+%   Side Effects:
+%       File output or Command Window output.
+
     % Get data
     [~,p] = find_node(root, 'NodeType', 'block', query{:});
     n = length(p);
@@ -103,10 +112,21 @@ function printQuery(root, query, printPath, file)
     end
 end
 
-function printPaths(p, file)
+function printPaths(paths, file)
 % PRINTPATHS Print a cell array of paths.
-    for i = 1:length(p)
-        line = strrep(cell2mat(p(i)), newline, ' ');
+%
+%   Inputs:
+%       paths   Cell array of paths char arrays.
+%       file    Filename or 1 for output to Command Window.
+%
+%   Outputs:
+%       N/A
+%
+%   Side Effects:
+%       File output or Command Window output.
+
+    for i = 1:length(paths)
+        line = strrep(cell2mat(paths(i)), newline, ' ');
         fprintf(file, '\t%s\n', line);
     end
 end

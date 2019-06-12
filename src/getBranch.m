@@ -1,5 +1,5 @@
 function branch = getBranch(node, root)
-% GETBRANCH Find which branch of the tree the node is located.
+% GETBRANCH Find which branch of the tree the node is located in.
 %
 %   Inputs:
 %       node    xmlcomp.Node object or xmlcomp.Node array.
