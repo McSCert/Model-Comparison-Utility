@@ -21,7 +21,21 @@ function [nodes, path] = find_node(root, varargin)
 %       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' ...]
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
-%       NodeName    
+%       NodeName
+%
+%   Example:
+%       >> allNodes = find_node(Edits)
+%
+%           allNodes = 
+%
+%               27×1 Node array with properties:
+%
+%                   Children
+%                   Edited
+%                   Name
+%                   Parameters
+%                   Parent
+%                   Partner
 
     % Validate inputs
     try
