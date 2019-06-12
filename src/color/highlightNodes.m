@@ -1,15 +1,16 @@
-function highlightNodes(nodes, sys, fgColor, bgColor, useReg)
+function highlightNodes(nodes, sys, varargin)
 % HIGHLIGHTNODES Remove colors in a model and color only the specificed
 %   model elements corresponding to nodes from the comparison tree.
 %
 %   Inputs:
-%       nodes    xmlcomp.Edits objects or handles. 
-%       sys      Path or name of the model.
-%       fgColor  Matlab color for foreground.
-%       bgColor  Matlab color for background.
-%       useReg   Use regular param setting to color blocks(1) instead of
-%                built-in Simulink hilite(0). Note: Regular coloring does
-%                not work for elements other than blocks. [Optional]
+%       nodes       xmlcomp.Edits objects or handles. 
+%       sys         Path or name of the model.
+%       varargin:
+%           fg      Matlab color for foreground.
+%           bg      Matlab color for background.
+%           param   Use block parameter to color blocks(1) instead of
+%                   built-in Simulink hilite(0). Setting the parameter allows
+%                   the coloring to be saved.
 %
 %   Outputs:
 %       N/A
@@ -23,6 +24,18 @@ function highlightNodes(nodes, sys, fgColor, bgColor, useReg)
         end
     end
     
+    % Validate inputs
+    fgColor = getInput('fg', varargin);
+    bgColor = getInput('bg', varargin);
+    useParam = getInput('param', varargin);
+    
+    if isempty(fgColor)
+        fgColor = 'red';
+    end
+    if isempty(bgColor)
+        bgColor = 'yellow';
+    end
+      
     % If given Nodes instead of handles, get the handles
     if isa(nodes, 'xmlcomp.Node')
         hdls = zeros(1, length(nodes));
@@ -37,7 +50,7 @@ function highlightNodes(nodes, sys, fgColor, bgColor, useReg)
     end
     
     % Highlight
-    if (nargin > 4) && useReg
+    if (nargin > 4) && useParam
         hilite_regular(nodes, bgColor);
     else
         set_param(0,'HiliteAncestorsData',... 
