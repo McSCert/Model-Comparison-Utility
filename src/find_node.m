@@ -5,7 +5,7 @@ function [nodes, path] = find_node(root, varargin)
 %
 %   Inputs:
 %       root        xmlcomp.Edits object.
-%       varargin    Search constraint as a 'Name', 'Value' pair.
+%       varargin    Search constraint as a 'Name', 'Value' pair. See below.
 %
 %   Outputs:
 %       nodes       Node array of xmlcomp.Node objects.
@@ -21,7 +21,7 @@ function [nodes, path] = find_node(root, varargin)
 %       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' ...]
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
-%       NodeName
+%       NodeName    <Node.Name>
 %
 %   Example:
 %       >> allNodes = find_node(Edits)

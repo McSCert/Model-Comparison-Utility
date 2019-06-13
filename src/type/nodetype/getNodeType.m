@@ -11,7 +11,7 @@ function type = getNodeType(node, varargin)
 %       sys     Path or name of the model. [Optional]
 %
 %   Outputs:
-%       type	The Type of node.
+%       type	The type of node.
 
     % Validate inputs
     try
@@ -56,6 +56,8 @@ function type = getNodeType(node, varargin)
         type = 'mask';
     elseif isAnnotation(node)
         type = 'annotation';
+    elseif isConfiguration(node)
+        type = 'configuration';
     elseif ~isempty(sys)
         path = getPath(node, varargin);
         if ~isempty(path) % Tree artifacts don't have paths (e.g. Comparison Root), or annotation, etc.
