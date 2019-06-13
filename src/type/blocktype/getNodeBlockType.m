@@ -41,8 +41,7 @@ function type = getNodeBlockType(node, sys)
             try
                 type = get_param(path, 'BlockType');
             catch
-                % Not a block. Look into why this was not caught by the
-                % isBlock function!
+                error('Trying to find the block type for a non-block. Look into why this was not caught by the isBlock function.')
             end
         end
 	end

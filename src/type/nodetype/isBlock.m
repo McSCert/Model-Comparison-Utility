@@ -30,6 +30,6 @@ function out = isBlock(node)
         hasBlockType = any(strcmp({node.Parameters.Name}, 'BlockType'));
     end
 
-    isOther = (isLine(node) || isPort(node) || isMask(node) || isAnnotation(node) || isBlockDiagram(node));
+    isOther = (isLine(node) || isPort(node) || isMask(node) || isAnnotation(node) || isBlockDiagram(node) || isConfiguration(node));
     out = hasBlockType || ~(isOther);
 end
