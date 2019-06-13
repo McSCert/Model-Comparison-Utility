@@ -52,9 +52,9 @@ function highlightNodes(nodes, sys, varargin)
     method  = getInput('method', varargin);
         
     if method
-        assert(bdIsLoaded(sys), 'Model is not loaded.');
-    else        
         assert(bdIsLoaded(sys) && strcmp(get_param(sys, 'Shown'), 'on'), 'Model is not opened.');
+    else
+        assert(bdIsLoaded(sys), 'Model is not loaded.');
     end
 
     if isempty(fgColor)
