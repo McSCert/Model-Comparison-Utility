@@ -61,11 +61,11 @@ function summaryOfChanges(root, printPath, printFile)
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport'}, printPath, file);
     fprintf(file, '\n');
     
-    printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem'}, printPath, file);
-    printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem'}, printPath, file);
-    printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem'}, printPath, file);
-    printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'subsystem'}, printPath, file);
-    fprintf(file, '\n');
+%     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem'}, printPath, file);
+%     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem'}, printPath, file);
+%     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem'}, printPath, file);
+%     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'subsystem'}, printPath, file);
+%     fprintf(file, '\n');
     
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'added'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'deleted'}, printPath, file);
@@ -95,7 +95,7 @@ function printQuery(root, query, printPath, file)
 %       File output or Command Window output.
 
     % Get data
-    [~,p] = find_node(root, 'NodeType', 'block', query{:});
+    [~,p] = find_node(root, query{:});
     n = length(p);
     
     % Construct formatting for query

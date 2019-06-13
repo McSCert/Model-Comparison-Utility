@@ -8,7 +8,13 @@ function branch = getBranch(node, root)
 %   Outputs:
 %       branch  Branch the node is in: left(0), right(1), both(2),
 %               or not found (-1).
-
+%
+%   Example:
+%       >> getBranch(Edits.LeftRoot.Children.Children.Children.Children(1), Edits)
+%
+%       ans =
+%
+%            1
 
     % Validate inputs
     try

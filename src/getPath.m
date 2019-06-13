@@ -11,9 +11,9 @@ function path = getPath(node, sys)
 %       path    Path of node in the model.
 %
 %   Examples:
-%       getPath(Edits.LeftRoot.Children.Children.Children.Children(1), 'test1_diff')
+%       getPath(Edits.LeftRoot.Children.Children.Children.Children(1), 'demo_before')
 %           ans =
-%               test1_diff/Subsystem/Subsystem/Add
+%               demo_defore/Subsystem/Subsystem/Add
 
     % Validate inputs
     try
