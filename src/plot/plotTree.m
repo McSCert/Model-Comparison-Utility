@@ -27,7 +27,7 @@ function h = plotTree(root)
     h.Marker = 's';
     h.MarkerSize = 8;
     
-        % Stop underscores from resulting in subscript
+    % Stop underscores from resulting in subscript
     try
         set(h, 'Interpreter' ,'none');
     catch
