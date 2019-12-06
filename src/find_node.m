@@ -15,13 +15,15 @@ function [nodes, path] = find_node(root, varargin)
 %   Usage:
 %       nodes = FIND_NODE(ROOT, 'CONSTRAINT1', 'VALUE1', ...)
 %       constrains the search of FIND_NODES to the specified constraint/value
-%       pairs (not case-sensitive). The following describes the available
-%       constraint/value pairs:
+%       pairs (not case-sensitive, except for NodeName). The following describes 
+%       the available constraint/value pairs:
 %
 %       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' ...]
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
 %       NodeName    <Node.Name>
+%
+%       Multiple values for a single constraint can be provided via a cell array.
 %
 %   Example:
 %       >> allNodes = find_node(Edits)
@@ -90,37 +92,57 @@ function out = findNode(node, root, file, varargin)
 
     % Parse varargin
     varargin   = varargin{:}; % Remove nesting cells from passing varargin in
-	nodeType   = getInput('NodeType', varargin);
-    changeType = getInput('ChangeType', varargin);
-    blockType  = getInput('BlockType', varargin);
+	nodeType   = lower(getInput('NodeType', varargin));
+    changeType = lower(getInput('ChangeType', varargin));
+    blockType  = lower(getInput('BlockType', varargin));
     nameValue  = getInput('NodeName', varargin);
 
     % Check against varargin constraints
     meetsConstraints = true;
 
     if ~isempty(nodeType)
-        isNodeType = strcmpi(nodeType, getNodeType(node, file));
+        if iscell(nodeType)
+            isNodeType = ismember(nodeType, lower(getNodeType(node, file)));
+        else
+            isNodeType = strcmpi(nodeType, getNodeType(node, file));
+        end
+        
         if ~any(isNodeType)
             meetsConstraints = false;
         end
     end
 
     if ~isempty(changeType) && meetsConstraints
-        isChangeType = strcmpi(changeType, getNodeChangeType(node, root));
+        if iscell(changeType)
+            isChangeType = ismember(changeType, lower(getNodeChangeType(node, root)));
+        else
+            isChangeType = strcmpi(changeType, getNodeChangeType(node, root));
+        end
+        
         if ~any(isChangeType)
             meetsConstraints = false;
         end
     end
 
     if ~isempty(blockType) && meetsConstraints
-        isBlockType = strcmpi(blockType, getNodeBlockType(node, file));
+        if iscell(blockType)
+            isBlockType = ismember(blockType, lower(getNodeBlockType(node, file)));
+        else
+            isBlockType = strcmpi(blockType, getNodeBlockType(node, file));
+        end
+        
         if ~any(isBlockType)
             meetsConstraints = false;
         end
     end
     
     if ~isempty(nameValue) && meetsConstraints
-        isMatchedName = strcmpi(nameValue, node.Name);
+        if iscell(nameValue)
+            isMatchedName = ismember(nameValue, node.Name);
+        else
+            isMatchedName = strcmp(nameValue, node.Name);
+        end
+        
         if ~any(isMatchedName)
             meetsConstraints = false;
         end
