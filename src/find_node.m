@@ -18,8 +18,8 @@ function [nodes, path] = find_node(root, varargin)
 %       pairs (not case-sensitive, except for NodeName). The following describes 
 %       the available constraint/value pairs:
 %
-%       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' ...]
-%       ChangeType	['added' | 'deleted' | 'modified' | 'renamed']
+%       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' | ...]
+%       ChangeType	['added' | 'deleted' | 'modified' | 'renamed' | 'none']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
 %       NodeName    <Node.Name>
 %
@@ -48,19 +48,19 @@ function [nodes, path] = find_node(root, varargin)
     end
 
     % Parse varargin
-    changeType = getInput('ChangeType', varargin);
+    changeType = lower(getInput('ChangeType', varargin));
 
     % Find the nodes
     % Don't have to check both branches, depending on the ChangeType:
-    % 1) Check RIGHT branch for Added, Modified, Renamed (i.e., not Deleted)
-    % 2) Check LEFT branch for Deleted, Modified, Renamed (i.e., not Added)
-    % 3) Check BOTH if no ChangeTypes
+    % 1) Check RIGHT branch for Added, Modified, Renamed
+    % 2) Check LEFT branch for Deleted, Modified, Renamed
+    % 3) Check BOTH if no ChangeTypes or None
     nodesFoundLeft = [];
     nodesFoundRight = [];
-    if isempty(changeType) || ~strcmpi(changeType, 'Deleted')
+    if isempty(changeType) || any(ismember(changeType, {'none', 'added', 'modified', 'renamed'}))
         nodesFoundRight = findNode(root.RightRoot, root, root.RightFileName, varargin);
     end
-    if isempty(changeType) || ~strcmpi(changeType, 'Added')
+    if isempty(changeType) || any(ismember(changeType, {'none', 'deleted', 'modified', 'renamed'}))
         nodesFoundLeft = findNode(root.LeftRoot, root, root.LeftFileName, varargin);
     end
     nodes = [nodesFoundLeft; nodesFoundRight]; % Combine node lists in case both sides were checked
