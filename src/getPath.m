@@ -40,7 +40,6 @@ function path = getPath(node, sys)
             [~,name,~] = fileparts(sys);
             root = bdroot(name);
             sysLoaded = bdIsLoaded(root);
-           % isRoot = strcmp(name, root); 
             if sysLoaded && (getSimulinkBlockHandle(path) == -1)
                 path = {};
             end

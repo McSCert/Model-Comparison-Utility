@@ -62,9 +62,9 @@ function type = getNodeType(node, varargin)
         path = getPath(node, varargin);
         if ~isempty(path) % Tree artifacts don't have paths (e.g. Comparison Root), or annotation, etc.
             try
-               type = get_param(getPath(node, varargin), 'Type');
+               type = get_param(path, 'Type');
             catch
-                %The path was not valid
+               % The path was not valid
                type = 'unknown';
             end
         else

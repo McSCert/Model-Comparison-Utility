@@ -18,6 +18,11 @@ function out = isPort(node)
         error(message)
     end
     
-    % Can be identified simply by its name
-    out = strcmp(node.Name, 'Port');
+    % Can be identified simply by its name if the user does not specify one
+    hasPortName = strcmp(node.Name, 'Port');
+    
+    % Named signals result in ports that don't have the generic Port name, but they have a port number
+    hasPortNumber = any(strcmp({node.Parameters.Name}, 'PortNumber'));
+    
+    out = hasPortName || hasPortNumber;
 end
