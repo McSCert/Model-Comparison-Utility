@@ -22,7 +22,16 @@ function out = isPort(node)
     hasPortName = strcmp(node.Name, 'Port');
     
     % Named signals result in ports that don't have the generic Port name, but they have a port number
-    hasPortNumber = any(strcmp({node.Parameters.Name}, 'PortNumber'));
+    
+    try
+        hasPortNumber = any(strcmp({node.Parameters.Name}, 'PortNumber'));
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:structRefFromNonStruct')
+            hasPortNumber = false;
+        else
+            rethrow(ME);
+        end
+    end
     
     out = hasPortName || hasPortNumber;
 end

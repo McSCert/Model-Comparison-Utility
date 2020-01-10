@@ -1,4 +1,4 @@
-function [nodes, changetype, nodetype, blocktype] = classifyChanges(root)
+function [nodes, path, changetype, nodetype, blocktype] = classifyChanges(root)
     
     % Validate inputs
     try
@@ -13,6 +13,7 @@ function [nodes, changetype, nodetype, blocktype] = classifyChanges(root)
     
     % Initialize outputs
     changetype = cell(size(nodes));
+    path       = cell(size(nodes));
     nodetype   = cell(size(nodes));
     blocktype  = cell(size(nodes));
     
@@ -26,9 +27,24 @@ function [nodes, changetype, nodetype, blocktype] = classifyChanges(root)
             hdl = getHandle(nodes(i), root.RightFileName);
         end
         
+        % Get path in model
+        path{i} = getfullname(hdl);
+        if isempty(path{i})
+            path{i} = '';
+        end
+        
         % Get node type
         nodetype{i} = get_param(hdl, 'Type');
-                
+        if isempty(nodetype{i})
+            nodetype{i} = getNodeType(nodes(i), root.LeftFileName);
+        end
+        if isempty(nodetype{i})
+            nodetype{i} = getNodeType(nodes(i), root.RightFileName);
+        end
+        if isempty(nodetype(i))
+            nodetype{i} = '';
+        end
+        
         % Get block type
         if strcmp(nodetype{i}, 'block')
             blocktype{i} = get_param(hdl, 'BlockType');

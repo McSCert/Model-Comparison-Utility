@@ -132,7 +132,11 @@ function hdl = getHandle(node, sys)
         annotations = find_system(p, 'SearchDepth', '1', 'FindAll', 'on', 'Type', 'annotation');
         
         % Compare the node's Name param with the annotations' Text params
-        name_node = node.Parameters(strcmp({node.Parameters.Name}, 'Name')).Value;
+        try
+            name_node = node.Parameters(strcmp({node.Parameters.Name}, 'Name')).Value;
+        catch
+            name_node = '';
+        end
         
         for i = 1:length(annotations)
             % Check for match
@@ -149,8 +153,18 @@ function hdl = getHandle(node, sys)
         ports = find_system(p, 'SearchDepth', '1', 'FindAll', 'on', 'Type', 'port');
         
         % Compare the node's params with the ports' params
-        paramNames = {node.Parameters.Name};
-        paramValues = {node.Parameters.Value};
+        try
+            paramNames  = {node.Parameters.Name};
+            paramValues = {node.Parameters.Value};
+        catch ME
+            if strcmp(ME.identifier, 'MATLAB:structRefFromNonStruct')
+                % There are no parameters/values
+                paramNames = '';
+                paramValues = '';
+            else
+                rethrow(ME);
+            end
+        end
         
         for i = 1:length(ports) % For each port
             allParamsSame = true;
