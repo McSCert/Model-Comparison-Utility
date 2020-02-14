@@ -22,6 +22,9 @@ function [nodes, path] = find_node(root, varargin)
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed' | 'none']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
 %       NodeName    <Node.Name>
+%       FirstOnly   [('off'), 'on']     For changes with 2 nodes (e.g., none, modified), 
+%                                       returns the first 'before' node. This is
+%                                       useful for counting nodes.
 %
 %       Multiple values for a single constraint can be provided via a cell array.
 %
@@ -49,6 +52,7 @@ function [nodes, path] = find_node(root, varargin)
 
     % Parse varargin
     changeType = lower(getInput('ChangeType', varargin));
+    firstOnly = lower(getInput('FirstOnly', varargin, 'off'));
 
     % Find the nodes
     % Don't have to check both branches, depending on the ChangeType:
@@ -60,8 +64,16 @@ function [nodes, path] = find_node(root, varargin)
     if isempty(changeType) || any(ismember(changeType, {'none', 'added', 'modified', 'renamed'}))
         nodesFoundRight = findNode(root.RightRoot, root, root.RightFileName, varargin);
     end
-    if isempty(changeType) || any(ismember(changeType, {'none', 'deleted', 'modified', 'renamed'}))
-        nodesFoundLeft = findNode(root.LeftRoot, root, root.LeftFileName, varargin);
+    
+    if strcmp(firstOnly, 'off')
+        if isempty(changeType) || any(ismember(changeType, {'none', 'deleted', 'modified', 'renamed'}))
+           nodesFoundLeft = findNode(root.LeftRoot, root, root.LeftFileName, varargin);
+        end
+    else
+        if isempty(changeType) || any(ismember(changeType, {'none', 'deleted'}))
+            varargin{2} = {'added', 'deleted'};
+            nodesFoundLeft = findNode(root.LeftRoot, root, root.LeftFileName, varargin);
+        end
     end
     nodes = [nodesFoundLeft; nodesFoundRight]; % Combine node lists in case both sides were checked
 
