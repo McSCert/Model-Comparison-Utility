@@ -43,7 +43,7 @@ function hdl = getHandle(node, sys)
         end
         parentName_node = parent.Name;
         
-        % Get the node's source/destination parameterss
+        % Get the node's source/destination parameters
         try   
             if any(strcmp({node.Parameters.Name}, 'SrcBlock'))
                 srcBlock_node = node.Parameters(strcmp({node.Parameters.Name}, 'SrcBlock')).Value;
@@ -87,12 +87,19 @@ function hdl = getHandle(node, sys)
         for i = 1:length(lines)
             if get_param(lines(i), 'LineParent') == -1
                 % Line source is a block
+                try
                 srcHdl = get_param(lines(i), 'SrcPortHandle');
-                [~, srcBlock, ~] = fileparts(get_param(srcHdl, 'Parent'));
-                srcPort = num2str(get_param(srcHdl, 'PortNumber'));                 
+                
+                    [~, srcBlock, ~] = fileparts(get_param(srcHdl, 'Parent'));
+                    srcPort = num2str(get_param(srcHdl, 'PortNumber'));
+                catch
+                    % Unconnected line, with no source
+                    srcBlock = '';
+                    srcPort = '';
+                end
             else
                 % Line source is a line
-                srcBlock = ''; % To match the notation of the node
+                srcBlock = '';
                 srcPort = '';
             end
             [~, parentName, ~] = fileparts(get_param(lines(i), 'Parent'));
