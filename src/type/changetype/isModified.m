@@ -11,7 +11,7 @@ function modified = isModified(node, checkPorts)
 %       checkPorts  Whether to consider changes in number of subsystem ports(1) or not(0).
 %
 %   Outputs:
-%       out         Whether the node has been modified(1) or not(0).
+%       modified    Whether the node has been modified(1) or not(0).
 
     % Validate inputs
     try
@@ -60,6 +60,10 @@ function modified = isModified(node, checkPorts)
         % Compare Values for matching Names
         for i = 1:length(params1)
             [member, idx] = ismember(params1(i), params2);
+            if member == 0
+                % Parameter doesn't exist in the other nodes parameter list
+                continue
+            end
             if strcmp(params1(i), 'Name') && strcmp(params2(idx), 'Name') % Skip differences in Name param. This is classified as 'renamed' type.
                  unchecked2(idx) = 0; % Mark as checked
             elseif ~checkPorts && (strcmp(params1(i), 'Ports') && strcmp(params2(idx), 'Ports')) % Skip differences in Ports param
