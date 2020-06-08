@@ -1,4 +1,4 @@
-function [nodes, path, changetype, nodetype, blocktype] = classifyChanges(root)
+function [nodes, path, changeType, nodeType, blockType] = classifyChanges(root)
     
     % Validate inputs
     try
@@ -12,14 +12,14 @@ function [nodes, path, changetype, nodetype, blocktype] = classifyChanges(root)
     nodes = find_node(root, 'ChangeType', {'added', 'deleted', 'modified', 'renamed'});
     
     % Initialize outputs
-    changetype = cell(size(nodes));
+    changeType = cell(size(nodes));
     path       = cell(size(nodes));
-    nodetype   = cell(size(nodes));
-    blocktype  = cell(size(nodes));
+    nodeType   = cell(size(nodes));
+    blockType  = cell(size(nodes));
     
     % For each change
     for i = 1:length(nodes)
-        changetype{i} = getNodeChangeType(nodes(i), root);
+        changeType{i} = getNodeChangeType(nodes(i), root);
         
         % Get handle in model
         hdl = getHandle(nodes(i), root.LeftFileName);
@@ -34,22 +34,22 @@ function [nodes, path, changetype, nodetype, blocktype] = classifyChanges(root)
         end
         
         % Get node type
-        nodetype{i} = get_param(hdl, 'Type');
-        if isempty(nodetype{i})
-            nodetype{i} = getNodeType(nodes(i), root.LeftFileName);
+        nodeType{i} = get_param(hdl, 'Type');
+        if isempty(nodeType{i})
+            nodeType{i} = getNodeType(nodes(i), root.LeftFileName);
         end
-        if isempty(nodetype{i})
-            nodetype{i} = getNodeType(nodes(i), root.RightFileName);
+        if isempty(nodeType{i})
+            nodeType{i} = getNodeType(nodes(i), root.RightFileName);
         end
-        if isempty(nodetype(i))
-            nodetype{i} = '';
+        if isempty(nodeType(i))
+            nodeType{i} = '';
         end
         
         % Get block type
-        if strcmp(nodetype{i}, 'block')
-            blocktype{i} = get_param(hdl, 'BlockType');
+        if strcmp(nodeType{i}, 'block')
+            blockType{i} = get_param(hdl, 'BlockType');
         else
-            blocktype{i} = '';
+            blockType{i} = '';
         end
     end
 end
