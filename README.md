@@ -1,7 +1,7 @@
 # Model-Comparison-Utility
 #### The Model Comparison Utility provides command line functions for supporting model comparison.
 
-![Visualizing the Edits tree as a digraph][imgs/cover]
+<img src="imgs/Cover.png" width="600">
 
 Differencing between two models is natively supported in Simulink via the [Simulink Comparison Tool](https://www.mathworks.com/help/simulink/model-comparison.html). This tool can generate a Word or HTML report displaying the changes that occur between models. Unfortunately, for large industrial models, these generated reports are not readable. As an alternative, the tool can output the comparison results to the Matlab base workspace as an `EditsObj` object that is structured as a tree.
 
