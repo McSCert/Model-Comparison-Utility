@@ -1,5 +1,5 @@
 function out = isOutport(node)
-% ISINPORT Determine if the node represents an outport block.
+% ISOUTPORT Determine if the node represents an outport block.
 %
 %   Inputs:
 %       node    xmlcomp.Node object.
@@ -14,23 +14,23 @@ function out = isOutport(node)
         message = 'Node argument must be an xmlcomp.Node object.';
         error(message)
     end
-    
+
     % Nodes representing blocks have their name set to the Name parameter of
     % the block, so we have to do some deduction
-   
+
     hasBlockType = false;
     if ~isempty(node.Parameters)
         hasBlockType = any(strcmp({node.Parameters.Name}, 'BlockType'));
     end
-    
+
     isOut = false;
     if hasBlockType
         idx = strcmp({node.Parameters.Name}, 'BlockType');
         idx = find(idx);
         values = {node.Parameters.Value};
-        
+
         isOut = strcmp(char(values(idx)), 'Outport');
     end
-    
+
     out = isOut && ~(isLine(node) || isPort(node) || isMask(node) || isAnnotation(node));
 end

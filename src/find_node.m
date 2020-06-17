@@ -15,14 +15,14 @@ function [nodes, path] = find_node(root, varargin)
 %   Usage:
 %       nodes = FIND_NODE(ROOT, 'CONSTRAINT1', 'VALUE1', ...)
 %       constrains the search of FIND_NODES to the specified constraint/value
-%       pairs (not case-sensitive, except for NodeName). The following describes 
+%       pairs (not case-sensitive, except for NodeName). The following describes
 %       the available constraint/value pairs:
 %
 %       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' | ...]
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed' | 'none']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
 %       NodeName    <Node.Name>
-%       FirstOnly   [('off'), 'on']     For changes with 2 nodes (e.g., none, modified), 
+%       FirstOnly   [('off'), 'on']     For changes with 2 nodes (e.g., none, modified),
 %                                       returns the first 'before' node. This is
 %                                       useful for counting nodes.
 %
@@ -31,9 +31,9 @@ function [nodes, path] = find_node(root, varargin)
 %   Example:
 %       >> allNodes = find_node(Edits)
 %
-%           allNodes = 
+%           allNodes =
 %
-%               27×1 Node array with properties:
+%               27x1 Node array with properties:
 %
 %                   Children
 %                   Edited
@@ -64,7 +64,7 @@ function [nodes, path] = find_node(root, varargin)
     if isempty(changeType) || any(ismember(changeType, {'none', 'added', 'modified', 'renamed'}))
         nodesFoundRight = findNode(root.RightRoot, root, root.RightFileName, varargin);
     end
-    
+
     if strcmp(firstOnly, 'off')
         if isempty(changeType) || any(ismember(changeType, {'none', 'deleted', 'modified', 'renamed'}))
            nodesFoundLeft = findNode(root.LeftRoot, root, root.LeftFileName, varargin);
@@ -118,7 +118,7 @@ function out = findNode(node, root, file, varargin)
         else
             isNodeType = strcmpi(nodeType, getNodeType(node, file));
         end
-        
+
         if ~any(isNodeType)
             meetsConstraints = false;
         end
@@ -130,7 +130,7 @@ function out = findNode(node, root, file, varargin)
         else
             isChangeType = strcmpi(changeType, getNodeChangeType(node, root));
         end
-        
+
         if ~any(isChangeType)
             meetsConstraints = false;
         end
@@ -142,19 +142,19 @@ function out = findNode(node, root, file, varargin)
         else
             isBlockType = strcmpi(blockType, getNodeBlockType(node, file));
         end
-        
+
         if ~any(isBlockType)
             meetsConstraints = false;
         end
     end
-    
+
     if ~isempty(nameValue) && meetsConstraints
         if iscell(nameValue)
             isMatchedName = ismember(nameValue, node.Name);
         else
             isMatchedName = strcmp(nameValue, node.Name);
         end
-        
+
         if ~any(isMatchedName)
             meetsConstraints = false;
         end

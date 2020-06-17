@@ -1,5 +1,7 @@
 function hilite_system_notopen(sys,hilite,varargin)
-%HILITE_SYSTEM_NOTOPEN Highlight a Simulink object.
+% HILITE_SYSTEM_NOTOPEN Highlight a Simulink object.
+%   This is a customized version of the built-in Matlab function hihlite_system.
+%
 %   HILITE_SYSTEM_NOTOPEN(SYS) highlights a Simulink object by WITHOUT opening the system
 %   window that contains the object and then highlighting the object using the
 %   HiliteAncestors property. This is a modification of the original function,
@@ -51,67 +53,59 @@ function hilite_system_notopen(sys,hilite,varargin)
 %   Copyright 1990-2009 The MathWorks, Inc.
 %   $Revision: 1.9.2.7 $
 
-%
-% Massage the input data for easier management below:
-%   chars  --> cell arrays
-%   scalar --> vector of length 2 with repeate of scalar (a hack, yes, but
-%              it does make things simpler...)
-%
-if ischar(sys)
-  sys = { sys, sys };
-elseif iscell(sys) && (length(sys) == 1)
-  sys = { cell2mat(sys(1)), cell2mat(sys(1)) };
-elseif isreal(sys) && (length(sys) == 1)
-  sys = [sys sys];
-end
-
-
-% Use handles instead of strings. It simplifies the code below
-sys = get_param(sys, 'Handle');
-sys = [ sys{:} ];
-
-% Unfortunately, port highlighting is currently not
-% supported. If possible, we use a connected segment.
-% Otherwise, we return unsuccessfully. See g411096.
-ports = find(strcmp(get_param(sys,'type'),'port'));
-if(~isempty(ports))
-    portLines =  get_param(sys(ports),'Line');
-    if(~eq(portLines{1}, -1) && ~eq(portLines{2},-1))
-        if iscell(portLines)
-          sys(ports) = [ portLines{:} ];
-        else
-          sys(ports) = portLines;
-        end
-    else
-        return;
+    % Massage the input data for easier management below:
+    %   chars  --> cell arrays
+    %   scalar --> vector of length 2 with repeate of scalar (a hack, yes, but
+    %              it does make things simpler...)
+    if ischar(sys)
+      sys = { sys, sys };
+    elseif iscell(sys) && (length(sys) == 1)
+      sys = {cell2mat(sys(1)), cell2mat(sys(1))};
+    elseif isreal(sys) && (length(sys) == 1)
+      sys = [sys sys];
     end
-end
 
+    % Use handles instead of strings to simplify the code
+    sys = get_param(sys, 'Handle');
+    sys = [sys{:}];
 
-% Construct a list of parent windows for each of the specified objects
-parents = get_param(sys,'Parent');
+    % Unfortunately, port highlighting is currently not
+    % supported. If possible, we use a connected segment.
+    % Otherwise, return unsuccessfully.
+    ports = find(strcmp(get_param(sys,'type'),'port'));
+    if(~isempty(ports))
+        portLines =  get_param(sys(ports),'Line');
+        if(~eq(portLines{1}, -1) && ~eq(portLines{2},-1))
+            if iscell(portLines)
+              sys(ports) = [ portLines{:} ];
+            else
+              sys(ports) = portLines;
+            end
+        else
+            return;
+        end
+    end
 
-% Weed out objects with no parent. They are models
-mdls = find(strcmp(parents,''));
-parents(mdls) = [];
-sys(mdls) = [];
+    % Construct a list of parent windows for each of the specified objects
+    parents = get_param(sys,'Parent');
 
-%
-% Set the HiliteAncestors property for each of the blocks
-%
-if nargin == 1
-  hilite = 'on';
-end
+    % Discard objects with no parent. They are models
+    mdls = find(strcmp(parents, ''));
+    parents(mdls) = [];
+    sys(mdls) = [];
 
-hiliteArgs = { 'HiliteAncestors', hilite };
+    % Set the HiliteAncestors property for each of the blocks
+    if nargin == 1
+      hilite = 'on';
+    end
 
-%
-% For each 'sys', set the HiliteAncestors property
-%
-for i = 1:length(sys)
-  set_param(sys(i), hiliteArgs{:},varargin{:});
-end
+    hiliteArgs = {'HiliteAncestors', hilite};
 
-% Scroll and zoom the window so that our objects are visible. Don't allow
-% the window to zoom out to more than 100% (for backwards compatibility).
-% Simulink.scrollToVisible(sys,false);
+    % For each 'sys', set the HiliteAncestors property
+    for i = 1:length(sys)
+      set_param(sys(i), hiliteArgs{:}, varargin{:});
+    end
+
+    % Scroll and zoom the window so that our objects are visible. Don't allow
+    % the window to zoom out to more than 100% (for backwards compatibility).
+    % Simulink.scrollToVisible(sys,false);

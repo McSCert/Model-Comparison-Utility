@@ -16,8 +16,8 @@ function summaryOfChanges(root, printPath, printFile)
 
     model1 = root.LeftFileName;
     model2 = root.RightFileName;
-    [~,name1,~] = fileparts(model1);
-    [~,name2,~] = fileparts(model2);
+    [~, name1, ~] = fileparts(model1);
+    [~, name2, ~] = fileparts(model2);
     if ~bdIsLoaded(name1) || ~bdIsLoaded(name2)
         error('Models are not loaded.');
     end
@@ -42,37 +42,37 @@ function summaryOfChanges(root, printPath, printFile)
     printQuery(root, {'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'ChangeType', 'modified'}, printPath, file);
     fprintf(file, '\n');
-    
+
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified'}, printPath, file);
     fprintf(file, '\n');
-    
+
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'inport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'inport'}, printPath, file);
     fprintf(file, '\n');
-    
+
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'outport'}, printPath, file);
     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'outport'}, printPath, file);
     fprintf(file, '\n');
-    
+
 %     printQuery(root, {'NodeType', 'block', 'ChangeType', 'added', 'BlockType', 'subsystem'}, printPath, file);
 %     printQuery(root, {'NodeType', 'block', 'ChangeType', 'deleted', 'BlockType', 'subsystem'}, printPath, file);
 %     printQuery(root, {'NodeType', 'block', 'ChangeType', 'renamed', 'BlockType', 'subsystem'}, printPath, file);
 %     printQuery(root, {'NodeType', 'block', 'ChangeType', 'modified', 'BlockType', 'subsystem'}, printPath, file);
 %     fprintf(file, '\n');
-    
+
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'added'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'deleted'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'renamed'}, printPath, file);
     printQuery(root, {'NodeType', 'line', 'ChangeType', 'modified'}, printPath, file);
     fprintf(file, '\n');
-    
+
     % Close file
     if ~(file == 1)
         fclose(file);
@@ -97,16 +97,16 @@ function printQuery(root, query, printPath, file)
     % Get data
     [~,p] = find_node(root, query{:});
     n = length(p);
-    
+
     % Construct formatting for query
     format = repmat('%s, ', 1, length(query));
     format = format(1:end-2); % Take off last comma and space
-    
+
     % Print query
     fprintf(file, format, query{:});
     fprintf(file, ' -- TOTAL %d\n', n);
 
-    % Print paths  
+    % Print paths
     if printPath
         printPaths(p, file);
     end
