@@ -31,7 +31,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Tool-Specific Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{../../common/macros}
+\input{../macros}
 
 \newcommand{\ToolName}{Model Comparison Utility\@\xspace}
 
@@ -90,7 +90,7 @@
 
 \begin{figure}
 	\centering
-	\includegraphics[]{../../common/McSCert_Logo.pdf} \\
+	\includegraphics[]{../figs/McSCert_Logo.pdf} \\
 	McMaster Centre for Software Certification (McSCert)
 \end{figure}
 
@@ -115,10 +115,12 @@ Unfortunately, MathWorks provides no built-in commands to be able to easily and 
 
 \begin{itemize}
 	\item \func{1} -- Search the comparison tree for nodes with specific block types, changes, names, \etc~(Section~\ref{SEC:findnode}).
-	\item \keyword{getHandle} -- Get the handle of the model element associated with the node from the comparison tree~(Section~\ref{SEC:gethandle}).
-	\item \keyword{getPath} -- Get the pathname of the model element associated with the node from the comparison tree~(Section~\ref{SEC:getpath}).
-	\item \keyword{plotTree} -- Plot the digraph of the comparison tree~(Section~\ref{SEC:plot}).
-	\item \keyword{summaryOfChanges} -- Print a summary report of the changes in the comparison tree to the Command Window or a \file{.txt} file~(Section~\ref{SEC:summary}).
+	\item \func{2} -- Get the handle of the model element associated with the node from the comparison tree~(Section~\ref{SEC:gethandle}).
+	\item \func{3} -- Get the pathname of the model element associated with the node from the comparison tree~(Section~\ref{SEC:getpath}).
+  \item \func{6} -- Get the path of the tree element in the comparison tree~(Section~\ref{SEC:getpathtree}).
+	\item \func{4} -- Plot the digraph of the comparison tree~(Section~\ref{SEC:plot}).
+	\item \func{5} -- Print a summary report of the changes in the comparison tree to the Command Window or a \file{.txt} file~(Section~\ref{SEC:summary}).
+	\item \func{7} -- Highlight model elements corresponding to comparison tree  nodes~(Section~\ref{SEC:highlight}).
 \end{itemize}
 Many other commands are included and are free to be used, but are not listed here. Please explore the source files for this utility to see all the of the various functions.
 
@@ -141,7 +143,7 @@ An \NodeObj object's properties are described in Figure~\ref{FIG:ObjectTable}. N
 
 \begin{table}[htb] 
 \centering
-\begin{tabular}{ll}
+\begin{tabular}{lp{26em}}
 \hline 
 Change Type & \NodeObj Placement in the Comparison Tree\\ \hline \hline
 Added       & Node exists in the right sub-tree, but not the left \\ \hline
@@ -261,7 +263,43 @@ The \func{5} function prints a text summary of the changes to a file or to the c
 
 \subsubsection{Highlight Nodes in the Model}
 \label{SEC:highlight}
-The \func{7} function highlights model elements corresponding to nodes.
+The \func{7} function highlights model elements corresponding to nodes. Optional arguments can be passed into the function to specify the colors and highlighting method. Please see the source code comment for more information. The highlighting can be done using the two available methods in \Simulink: using \href{https://www.mathworks.com/help/simulink/slref/hilite_system.html}{hilite\_system}, or by modifying the model element's \href{https://www.mathworks.com/help/simulink/ug/approach-modeling-programmatically.html#f4-93649}{ForegroundColor/BackgroundColor} parameters. The differences between the two approaches are elaborated on in Table~\ref{tbl:colorcomparison}. 
+
+\begin{figure}[ht!]
+\begin{center}
+\begin{tabular}{p{16em} p{16em}}
+\hline
+ Hilite\_system & Foreground/Background \\ \hline \hline
+ Highlights SubSystem blocks when they are not modified themselves & Only highlights SubSystem blocks when they are listed in the nodes argument \\ \hline
+ Disappears upon model close & Can be saved in the model \\ \hline  
+ Does not overwrite existing coloring &  Overwrites previous coloring \textbf{Note:} To revert to previous highlighting, do not save, and then close and reopen the model \\ \hline
+ To undo, right-click in the model and select \cmd{Remove Highlighting}. & Can remove \emph{all color} (i.e. change to default black/white), by running: \cmd{highlightNodes(nodes, sys, 'fg', 'black', 'bg', 'white')} \\ \hline
+ Can do highlighting on a loaded model as well as an opened model & Can do highlighting on an opened model only \\ \hline
+\end{tabular}
+\end{center}
+\caption{The differences in highlighting methods.}
+\label{tbl:colorcomparison}
+\end{figure}
+
+%   0. Hilite
+%       - Highlights SubSystem blocks when they are not modified themselves
+%       - Disappears upon model close
+%       - Does not overwrite existing coloring
+%           * To undo, right-click in the model and select 'Remove Highlighting'
+%       - Can do highlighting on a loaded model as well as an opened model
+%
+%   1. Parameter Setting (Default)
+%       - Only highlights SubSystem blocks when they are listed in the nodes argument
+%       - Only changes BackgroundColor. As a result, lines are not highlighted.
+%           - Warning: Changing the ForegroundColor of blocks also colors their
+%           outgoing lines! This will show inaccurate results.
+%       - Can be saved in the model
+%       - Overwrites previous coloring without the ability to undo
+%           * To revert to previous highlighting, do not save, and then close and
+%             reopen the model
+%       	* To revert to no highlighting (i.e. default black/white), run:
+%               highlightNodes(nodes, sys, 'fg', 'black', 'bg', 'white')
+%       - Can do highlighting on an opened model only
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Example
@@ -321,7 +359,7 @@ After the \EditsObj object is created, the \ToolName can be used.
     \includegraphics[width=\textwidth]{../figs/example/After}
     \caption{Model After Changes.}
   \end{subfigure}
-\caption{Two Versions of a Single Model.}
+\caption{Two Versions of a single model.}
 \label{FIG:demo}
 \end{figure}
 
@@ -489,7 +527,7 @@ Support for Stateflow comparison will be added in a future release of this tool.
 The MathWorks. 
 ``Compare XML Files".
 \\\texttt{https://www.mathworks.com/help/matlab/matlab\_env/compare-xml-files.html}
-[Online; Accessed June 2019]
+[Online; Accessed June 2020]
 \end{thebibliography}
 
 \end{document}
