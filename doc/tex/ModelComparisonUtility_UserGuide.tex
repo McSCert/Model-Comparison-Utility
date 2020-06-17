@@ -31,7 +31,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Tool-Specific Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{../macros}
+\input{macros}
 
 \newcommand{\ToolName}{Model Comparison Utility\@\xspace}
 
@@ -281,26 +281,6 @@ The \func{7} function highlights model elements corresponding to nodes. Optional
 \label{tbl:colorcomparison}
 \end{figure}
 
-%   0. Hilite
-%       - Highlights SubSystem blocks when they are not modified themselves
-%       - Disappears upon model close
-%       - Does not overwrite existing coloring
-%           * To undo, right-click in the model and select 'Remove Highlighting'
-%       - Can do highlighting on a loaded model as well as an opened model
-%
-%   1. Parameter Setting (Default)
-%       - Only highlights SubSystem blocks when they are listed in the nodes argument
-%       - Only changes BackgroundColor. As a result, lines are not highlighted.
-%           - Warning: Changing the ForegroundColor of blocks also colors their
-%           outgoing lines! This will show inaccurate results.
-%       - Can be saved in the model
-%       - Overwrites previous coloring without the ability to undo
-%           * To revert to previous highlighting, do not save, and then close and
-%             reopen the model
-%       	* To revert to no highlighting (i.e. default black/white), run:
-%               highlightNodes(nodes, sys, 'fg', 'black', 'bg', 'white')
-%       - Can do highlighting on an opened model only
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Example
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -424,35 +404,6 @@ plotTree(Edits);
 
 \subsection{Printing a Summary of Changes}
 To print a textual report of the changes to the Command Window, use the following command. The format of the report is first the query information: $<$Query constraints$>$ -{}- TOTAL $<$\#$>$, following by the tree paths of the nodes. It is possible to print the summary to a \file{.txt} file, or omit including the paths. Please see the function's header comment for more information. Feel free to modify this report with the queries you require.
-
-%\begin{lstlisting}
-%>> summaryOfChanges(Edits)
-%
-%ChangeType, added -- TOTAL 2
-%ChangeType, deleted -- TOTAL 1
-%ChangeType, renamed -- TOTAL 2
-%ChangeType, modified -- TOTAL 4
-%NodeType, block, ChangeType, added -- TOTAL 2
-%NodeType, block, ChangeType, deleted -- TOTAL 1
-%NodeType, block, ChangeType, renamed -- TOTAL 2
-%NodeType, block, ChangeType, modified -- TOTAL 4
-%NodeType, block, ChangeType, added, BlockType, inport -- TOTAL 0
-%NodeType, block, ChangeType, deleted, BlockType, inport -- TOTAL 0
-%NodeType, block, ChangeType, renamed, BlockType, inport -- TOTAL 0
-%NodeType, block, ChangeType, modified, BlockType, inport -- TOTAL 0
-%NodeType, block, ChangeType, added, BlockType, outport -- TOTAL 0
-%NodeType, block, ChangeType, deleted, BlockType, outport -- TOTAL 0
-%NodeType, block, ChangeType, renamed, BlockType, outport -- TOTAL 2
-%NodeType, block, ChangeType, modified, BlockType, outport -- TOTAL 0
-%NodeType, block, ChangeType, added, BlockType, subsystem -- TOTAL 0
-%NodeType, block, ChangeType, deleted, BlockType, subsystem -- TOTAL 0
-%NodeType, block, ChangeType, renamed, BlockType, subsystem -- TOTAL 0
-%NodeType, block, ChangeType, modified, BlockType, subsystem -- TOTAL 0
-%NodeType, line, ChangeType, added -- TOTAL 2
-%NodeType, line, ChangeType, deleted -- TOTAL 1
-%NodeType, line, ChangeType, renamed -- TOTAL 2
-%NodeType, line, ChangeType, modified -- TOTAL 4
-%\end{lstlisting}
 
 \begin{lstlisting}
 >> summaryOfChanges(Edits, 1)
