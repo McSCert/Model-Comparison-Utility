@@ -1,4 +1,4 @@
-# Model-Comparison-Utility
+# Model Comparison Utility
 #### The Model Comparison Utility provides command line functions for supporting model comparison.
 
 <img src="imgs/Cover.png" width="600">
