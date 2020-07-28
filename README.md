@@ -16,8 +16,10 @@ Unfortunately, MathWorks provides no built-in commands to be able to easily and 
 
 Many other commands are included and are free to be used, but are not listed here. Please explore the source files for this utility to see all the of the various functions.
 
+## User Guide
 For installation, and other information, please see the [User Guide](doc/ModelComparisonUtility_UserGuide.pdf).
 
-This tool is also available for download on the [Matlab Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility).
+## Matlab File Exchange
+This tool is also available the [Matlab Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility).
 
 [![View Model Comparison Utility on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility)
