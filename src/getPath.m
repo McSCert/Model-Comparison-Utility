@@ -41,7 +41,34 @@ function path = getPath(node, sys)
             root = bdroot(name);
             sysLoaded = bdIsLoaded(root);
             if sysLoaded && (getSimulinkBlockHandle(path) == -1)
-                path = {};
+                try
+                    % Try to see if it's an annotation at the path
+                    [pathOfAnnotation, nameOfAnnotation, ~] = fileparts(path);
+                    annotationsInPath_h = find_system(pathOfAnnotation, 'SearchDepth', 1, 'LookUnderMasks', 'on', 'FindAll', 'on', 'Type', 'annotation');
+                    annotationsInPath_names = get_param(annotationsInPath_h, 'Name');
+                    
+                    % Make it a cell array for consistency
+                    if ~iscell(annotationsInPath_names)
+                        annotationsInPath_names = {annotationsInPath_names};
+                    end
+                    
+                    % The comparison node name can be truncated and .. added to
+                    % the end if it is long, so we need to accomodate for
+                    % semi-matching names
+                    if endsWith(nameOfAnnotation, '..')
+                        a = nameOfAnnotation;
+                        nameOfAnnotation = a(1:end-2);
+                        nameOfAnnotation = [nameOfAnnotation '.*'];
+                    end
+                    
+                    actual_name = annotationsInPath_names(~cellfun('isempty', regexp(annotationsInPath_names, nameOfAnnotation)));
+                    if iscell(actual_name)
+                        actual_name = actual_name{:};
+                    end
+                    path = [pathOfAnnotation '/' actual_name];
+                catch
+                    path = {};
+                end
             end
         catch
             % Model not loaded so cannot check
