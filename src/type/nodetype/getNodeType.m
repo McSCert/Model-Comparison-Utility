@@ -54,13 +54,13 @@ function type = getNodeType(node, varargin)
         type = 'port';
     elseif isMask(node)
         type = 'mask';
-    elseif isAnnotation(node)
-        type = 'annotation';
     elseif isConfiguration(node)
         type = 'configuration';
+    elseif isAnnotation(node)
+        type = 'annotation';
     elseif ~isempty(sys)
         path = getPath(node, varargin);
-        if ~isempty(path) % Tree artifacts don't have paths (e.g. Comparison Root), or annotation, etc.
+        if ~isempty(path) % Tree artifacts don't have paths (e.g. Comparison Root)
             try
                type = get_param(path, 'Type');
             catch
