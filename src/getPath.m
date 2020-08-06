@@ -63,13 +63,7 @@ function path = getPath(node, sys)
                         nameOfAnnotation = a(1:end-2);
                     end
                     
-                    actual_name = '';
-                    for i = 1:length(annotationsInPath_names)
-                        if startsWith(annotationsInPath_names{i}, nameOfAnnotation)
-                            actual_name = annotationsInPath_names{i};
-                            break;
-                        end
-                    end
+                    actual_name = annotationsInPath_names(~cellfun('isempty', regexp(annotationsInPath_names, nameOfAnnotation)));
                     if iscell(actual_name)
                         actual_name = actual_name{:};
                     end
