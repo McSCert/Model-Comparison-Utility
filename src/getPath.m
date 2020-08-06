@@ -55,21 +55,13 @@ function path = getPath(node, sys)
                     % The comparison node name can be truncated and .. added to
                     % the end if it is long, so we need to accomodate for
                     % semi-matching names
-                    if endsWith(nameOfAnnotation, '...')
+                    if endsWith(nameOfAnnotation, '..')
                         a = nameOfAnnotation;
                         nameOfAnnotation = a(1:end-2);
-                    elseif endsWith(nameOfAnnotation, '..')
-                        a = nameOfAnnotation;
-                        nameOfAnnotation = a(1:end-2);
+                        nameOfAnnotation = [nameOfAnnotation '.*'];
                     end
                     
-                    actual_name = '';
-                    for i = 1:length(annotationsInPath_names)
-                        if startsWith(annotationsInPath_names{i}, nameOfAnnotation)
-                            actual_name = annotationsInPath_names{i};
-                            break;
-                        end
-                    end
+                    actual_name = annotationsInPath_names(~cellfun('isempty', regexp(annotationsInPath_names, nameOfAnnotation)));
                     if iscell(actual_name)
                         actual_name = actual_name{:};
                     end
