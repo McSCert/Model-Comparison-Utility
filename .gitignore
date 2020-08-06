@@ -1,2 +1,7 @@
 
 *.asv
+*.aux
+*.log
+*.out
+*.gz
+*.toc
