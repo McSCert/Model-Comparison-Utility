@@ -57,7 +57,7 @@ function path = getPath(node, sys)
                     % semi-matching names
                     if endsWith(nameOfAnnotation, '...')
                         a = nameOfAnnotation;
-                        nameOfAnnotation = a(1:end-2);
+                        nameOfAnnotation = a(1:end-3);
                     elseif endsWith(nameOfAnnotation, '..')
                         a = nameOfAnnotation;
                         nameOfAnnotation = a(1:end-2);
