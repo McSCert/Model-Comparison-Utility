@@ -18,7 +18,7 @@ function h = plotTree(root)
     % Use Simulink-like plot options
     % Info on options: https://www.mathworks.com/help/matlab/ref/graph.plot.html
     figure
-    h = plot(G, 'Layout', 'layered', 'Direction', 'right', 'AssignLayers', 'asap', 'ShowArrows', 'off');
+    h = plot(G, 'NodeLabel', G.Nodes.Label, 'Layout', 'layered', 'Direction', 'right', 'AssignLayers', 'asap', 'ShowArrows', 'off');
     
     % Visual improvements
     title(t, 'Interpreter' ,'none');
