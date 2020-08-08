@@ -142,7 +142,7 @@ function hdl = getHandle(node, sys)
         try
             name_node = node.Parameters(strcmp({node.Parameters.Name}, 'Name')).Value;
         catch
-            name_node = '';
+            name_node = node.Name;
         end
         
         for i = 1:length(annotations)
