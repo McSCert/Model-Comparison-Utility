@@ -33,16 +33,23 @@ function [source, target, nodes] = createSourceTarget(root)
 %       source   Cell array of source nodes.
 %       target   Cell array of target nodes.
 %       nodes    Cell array of node labels.
-
-    nodes_before = getSubTree(root.LeftRoot);
-    nodes_after = getSubTree(root.RightRoot);    
     
     source = {};
     target = {};
-    nodes = {};
+    nodes  = {};
+    
+    % Add the root node
+    source{end+1} = 'Edits';
+    source{end+1} = 'Edits';
+    target{end+1} = 'Comparison Root (before)';
+    target{end+1} = 'Comparison Root (after)';
+    nodes{end+1}  = 'Edits';
+    nodes{end+1}  = 'Comparison Root (before}';
+    nodes{end+1}  = 'Comparison Root (after}';
         
     % Before
-    nodes{end+1} = 'Comparison Root (before}';
+    nodes_before = getSubTree(root.LeftRoot);
+   
     for j = 1:length(nodes_before)
         children = nodes_before(j).Children;
         if isempty(children)
@@ -55,12 +62,13 @@ function [source, target, nodes] = createSourceTarget(root)
             for k = 1:length(children)
                 source{end+1} = [parent suffix];
                 target{end+1} = [getPathTree(children(k)) suffix];
-                nodes{end+1} = char(children(k).Name);
+                nodes{end+1}  = char(children(k).Name);
             end
         end
     end
+    
     % After
-    nodes{end+1} = 'Comparison Root (after}';
+    nodes_after = getSubTree(root.RightRoot);   
     for j = 1:length(nodes_after)
         children = nodes_after(j).Children;
         if isempty(children)
@@ -73,21 +81,9 @@ function [source, target, nodes] = createSourceTarget(root)
             for k = 1:length(children)
                 source{end+1} = [parent suffix];
                 target{end+1} = [getPathTree(children(k)) suffix];
-                nodes{end+1} = char(children(k).Name);
+                nodes{end+1}  = char(children(k).Name);
             end
         end
     end
-
-    % Add the root node
-    source{end+1} = 'Edits';
-    source{end+1} = 'Edits';
-    if verLessThan('Simulink', '8.9')
-        target{end+1} = 'SLX Comparison Root (before)';
-        target{end+1} = 'SLX Comparison Root (after)';
-    else
-        target{end+1} = 'Comparison Root (before)';
-        target{end+1} = 'Comparison Root (after)';
-    end
-    nodes{end+1} = 'Edits';
     nodes = nodes';
 end
