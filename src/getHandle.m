@@ -136,7 +136,7 @@ function hdl = getHandle(node, sys)
          % -- Search for the annotation in the model --
          % Get all annotations in the subsystem
         p = getParentPath(node, sys);
-        annotations = find_system(p, 'SearchDepth', '1', 'FindAll', 'on', 'Type', 'annotation');
+        annotations = find_system(p, 'SearchDepth', '1', 'LookUnderMasks', 'on', 'FindAll', 'on', 'Type', 'annotation');
         
         % Compare the node's Name param with the annotations' Text params
         try
