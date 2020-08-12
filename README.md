@@ -10,6 +10,7 @@ Unfortunately, MathWorks provides no built-in commands to be able to easily and 
 * `find_node` - Search the comparison tree for nodes with specific block types, changes, names, etc.
 * `getHandle` - Get the handle of the model element associated with the node from the comparison tree.
 * `getPath` - Get the pathname of the model element associated with the node from the comparison tree.
+* `getNodeType` - Determine whether the node presents a block, line, annotation, mask, etc.
 * `plotTree` - Plot the digraph of the comparison tree.
 * `treeToTable` - Convert the comparison tree to a table.
 * `summaryOfChanges` - Print a summary report of the changes in the comparison tree to the Command Window or a .txt file.
