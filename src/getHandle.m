@@ -140,15 +140,26 @@ function hdl = getHandle(node, sys)
         
         % Compare the node's Name param with the annotations' Text params
         try
-            name_node = node.Parameters(strcmp({node.Parameters.Name}, 'Name')).Value;
+            nameOfAnnotation = node.Parameters(strcmp({node.Parameters.Name}, 'Name')).Value;
         catch
-            name_node = node.Name;
+            nameOfAnnotation = node.Name;
+        end
+        
+        % The node name can be truncated and ... or .. added to
+        % the end if it is long, so we need to accomodate for
+        % semi-matching names
+        if endsWith(nameOfAnnotation, '...')
+            a = nameOfAnnotation;
+            nameOfAnnotation = a(1:end-3);
+        elseif endsWith(nameOfAnnotation, '..')
+            a = nameOfAnnotation;
+            nameOfAnnotation = a(1:end-2);
         end
         
         for i = 1:length(annotations)
             % Check for match
-            if strcmp(name_node, get_param(annotations(i), 'PlainText')) || ...
-                    strcmp(name_node, get_param(annotations(i), 'Text')) 
+            if startsWith(get_param(annotations(i), 'PlainText'), nameOfAnnotation) || ...
+                    startsWith(get_param(annotations(i), 'Text'), nameOfAnnotation)
                 hdl = annotations(i);
                 return
             end
