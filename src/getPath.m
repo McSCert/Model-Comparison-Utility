@@ -43,7 +43,7 @@ function path = getPath(node, sys)
             if sysLoaded && (getSimulinkBlockHandle(path) == -1)
                 try
                     % Try to see if it's an annotation at the path
-                    [pathOfAnnotation, nameOfAnnotation, ~] = fileparts(path);
+                    [pathOfAnnotation, nameOfAnnotation] = getNameFromPath(path);
                     annotationsInPath_h = find_system(pathOfAnnotation, 'SearchDepth', 1, 'LookUnderMasks', 'on', 'FindAll', 'on', 'Type', 'annotation');
                     annotationsInPath_names = get_param(annotationsInPath_h, 'Name');
                     
@@ -73,6 +73,7 @@ function path = getPath(node, sys)
                     if iscell(actual_name)
                         actual_name = actual_name{:};
                     end
+                    actual_name = strrep(actual_name, '/', '//'); % Escape forwardslashes in names
                     path = [pathOfAnnotation '/' actual_name];
                 catch
                     path = {};
