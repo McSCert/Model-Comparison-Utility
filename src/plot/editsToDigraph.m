@@ -6,12 +6,6 @@ function D = editsToDigraph(root)
 %
 %   Outputs:
 %       D       Digraph.
-
-    % Known issues:
-    %   1) Non-unique node names may result in single nodes when there should be 
-    %   two distinct nodes. Subsystems, all named 'Subsystem', are shown as
-    %   loops. This is resolved currently by using the node paths as the graph
-    %   nodes names. This results in long names.
     
     % Validate inputs
     try
@@ -21,12 +15,13 @@ function D = editsToDigraph(root)
         error(message)
     end
     
-    [source, target] = createSourceTarget(root);
+    [source, target, nodes] = createSourceTarget(root);
     
     D = digraph(source, target);
+    D.Nodes.Label = nodes;
 end
 
-function [source, target] = createSourceTarget(root)
+function [source, target, nodes] = createSourceTarget(root)
 % CREATESOURCETARGET Get the directed graph edges as (source, target) pairs for
 %   a comparison tree.
 %   (See www.mathworks.com/help/matlab/ref/digraph.html#mw_26035adf-ff90-4a33-a8f8-42048d7e39a6)
@@ -37,34 +32,35 @@ function [source, target] = createSourceTarget(root)
 %   Outputs:
 %       source   Cell array of source nodes.
 %       target   Cell array of target nodes.
+%       nodes    Cell array of node labels.
 
     nodes_before = getSubTree(root.LeftRoot);
-    nodes_after = getSubTree(root.RightRoot);
-    
+    nodes_after = getSubTree(root.RightRoot);    
     
     source = {};
     target = {};
+    nodes = {};
+        
     % Before
+    nodes{end+1} = 'Comparison Root (before}';
     for j = 1:length(nodes_before)
         children = nodes_before(j).Children;
         if isempty(children)
             continue
         else
-            %children = {nodes_before(j).Children.Name};
-            %parent = nodes_before(j).Name;
             children = nodes_before(j).Children;
             parent = getPathTree(nodes_before(j));
             suffix = ' (before)';
             
             for k = 1:length(children)
-                %source{end+1} = [parent suffix];
-                %target{end+1} = [char(children(k)) suffix];
                 source{end+1} = [parent suffix];
                 target{end+1} = [getPathTree(children(k)) suffix];
+                nodes{end+1} = char(children(k).Name);
             end
         end
     end
     % After
+    nodes{end+1} = 'Comparison Root (after}';
     for j = 1:length(nodes_after)
         children = nodes_after(j).Children;
         if isempty(children)
@@ -77,6 +73,7 @@ function [source, target] = createSourceTarget(root)
             for k = 1:length(children)
                 source{end+1} = [parent suffix];
                 target{end+1} = [getPathTree(children(k)) suffix];
+                nodes{end+1} = char(children(k).Name);
             end
         end
     end
@@ -91,4 +88,6 @@ function [source, target] = createSourceTarget(root)
         target{end+1} = 'Comparison Root (before)';
         target{end+1} = 'Comparison Root (after)';
     end
+    nodes{end+1} = 'Edits';
+    nodes = nodes';
 end
