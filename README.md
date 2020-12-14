@@ -1,4 +1,6 @@
 # Model Comparison Utility
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4321650.svg)](https://doi.org/10.5281/zenodo.4321650)
+[![View Model Comparison Utility on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility)
 #### The Model Comparison Utility provides command line functions for supporting Simulink model comparison.
 
 <img src="imgs/Cover.png" width="750">
@@ -19,8 +21,3 @@ Many other commands are included and are free to be used, but are not listed her
 
 ## User Guide
 For installation, and other information, please see the [User Guide](doc/ModelComparisonUtility_UserGuide.pdf).
-
-## Matlab File Exchange
-This tool is also available on the [Matlab Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility).
-
-[![View Model Comparison Utility on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/71834-model-comparison-utility)
