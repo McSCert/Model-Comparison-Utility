@@ -189,13 +189,17 @@ This section describes what must be done to setup the tool, as well as how to us
 			\item Download the \href{https://github.com/McSCert/Simulink-Utility}{Simulink-Utility} in the same manner. Add the folder and subfolders to your \mpath also. This is a dependency for the tool to work correctly.
 		\end{enumerate}
 		\item \textbf{Use the Git command line}
-			\begin{enumerate}
-				\item Use the command, \begin{verbatim}git clone --recursive https://github.com/McSCert/Model-Comparison-Utility\end{verbatim} This will download the tool and any necessary submodules.
-			\end{enumerate}
+		\begin{enumerate}
+			\item Use the following command to download the tool and any necessary submodules. 
+			\begin{verbatim}
+			git clone --recursive https://github.com/McSCert/Model-Comparison-Utility
+			\end{verbatim}
+			\item Add the folder and subfolders to your \mpath. 
+		\end{enumerate}
 		\item \textbf{If you already have the files}
-			\begin{enumerate}
-						\item Add the tool folder and subfolders to your \mpath. 
-			\end{enumerate}
+		\begin{enumerate}
+			\item Add the tool folder and subfolders to your \mpath. 
+		\end{enumerate}
 	\end{enumerate}
 	\item Run \href{https://www.mathworks.com/help/simulink/ug/registering-customizations.html}{sl\_refresh\_customizations} to refresh the Context Menu. 
 	\item Ensure your model is open and unlocked.
