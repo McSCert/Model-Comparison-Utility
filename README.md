@@ -20,4 +20,4 @@ Unfortunately, MathWorks provides no built-in commands to be able to easily and 
 Many other commands are included and are free to be used, but are not listed here. Please explore the source files for this utility to see all the of the various functions.
 
 ## User Guide
-For installation, and other information, please see the [User Guide](doc/ModelComparisonUtility_UserGuide.pdf).
+For installation and other information, please see the [User Guide](doc/ModelComparisonUtility_UserGuide.pdf).
