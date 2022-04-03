@@ -207,6 +207,13 @@ function hdl = getHandle(node, sys)
                 hdl = ports(i);
                 return
             end
-        end    
+        end
+    elseif strcmp(type, 'stateflow')
+        p = getPath(node, sys);
+        if ~isempty(p)
+            hdl = get_param(p, 'Handle');
+        else
+            hdl = [];
+        end
     end
 end

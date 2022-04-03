@@ -64,20 +64,26 @@ function highlightNodes(nodes, sys, varargin)
         bgColor = 'yellow';
     end
 
-    % If given Nodes instead of handles, get the handles
+    % If given Nodes instead of handles, get the handles and/or Stateflow
+    % objects
     if isa(nodes, 'xmlcomp.Node')
         hdls = zeros(1, length(nodes));
+        sfObj = [];
         for i = 1:length(nodes)
             try
                 hdls(i) = getHandle(nodes(i), sys);
             catch
                 hdls(i) = NaN;
             end
+
+            if isStateflow(nodes(i))
+                sfObj = vertcat(sfObj, getStateflowObj(nodes(i)));
+            end
         end
         nodes = hdls(isfinite(hdls(:))); % Remove invalid hdls
     end
 
-    % Highlight
+    % %Highlight Simulink
     if method
         colorRegular(nodes, fgColor, bgColor);
     else
@@ -86,6 +92,14 @@ function highlightNodes(nodes, sys, varargin)
                    'ForegroundColor', fgColor, ...
                    'BackgroundColor', bgColor));
         hilite_system_notopen(nodes, 'user2');
+    end
+
+    %% Highlight Stateflow
+    % Limitation: Only one Stateflow object can be highlighted at once.
+    % This will attempt to highlight all successively, but only the last
+    % one will appear.
+    for i = 1:numel(sfObj)
+        highlight(sfObj(i));
     end
 end
 

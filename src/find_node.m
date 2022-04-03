@@ -18,9 +18,10 @@ function [nodes, path] = find_node(root, varargin)
 %       pairs (not case-sensitive, except for NodeName). The following describes
 %       the available constraint/value pairs:
 %
-%       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' | ...]
+%       NodeType	['block' | 'line' | 'port' | 'annotation' | 'mask' | 'block_diagram' | 'stateflow' | ...]
 %       ChangeType	['added' | 'deleted' | 'modified' | 'renamed' | 'none']
 %       BlockType	['SubSystem' | 'Inport' | 'Outport' | ...]
+%       StateflowType ['Stateflow.Annotation' | 'Sateflow.Transition' | 'Sateflow.State' | ...]
 %       NodeName    <Node.Name>
 %       FirstOnly   [('off'), 'on']     For changes with 2 nodes (e.g., none, modified),
 %                                       returns the first 'before' node. This is
@@ -107,6 +108,7 @@ function out = findNode(node, root, file, varargin)
 	nodeType   = lower(getInput('NodeType', varargin));
     changeType = lower(getInput('ChangeType', varargin));
     blockType  = lower(getInput('BlockType', varargin));
+    stateflowType = lower(getInput('StateflowType', varargin));
     nameValue  = getInput('NodeName', varargin);
 
     % Check against varargin constraints
@@ -144,6 +146,18 @@ function out = findNode(node, root, file, varargin)
         end
 
         if ~any(isBlockType)
+            meetsConstraints = false;
+        end
+    end
+
+    if ~isempty(stateflowType) && meetsConstraints
+        if iscell(stateflowType)
+            isStateflowType = ismember(stateflowType, lower(getStateflowType(node)));
+        else
+            isStateflowType = strcmpi(stateflowType, getStateflowType(node));
+        end
+
+        if ~any(isStateflowType)
             meetsConstraints = false;
         end
     end
