@@ -1,6 +1,6 @@
 function type = getNodeType(node, varargin)
 % GETNODETYPE Determine the type of element that the node represents in the
-%   model: block, block_diagram, line, port, mask, or annotation.
+%   model: block, block_diagram, line, port, mask, annotation, or stateflow.
 %
 %   In general, only elements which are Edited can have their type inferred
 %   directly from the tree. For those that cannot be inferred, if sys is 
@@ -44,7 +44,11 @@ function type = getNodeType(node, varargin)
 
     % First try to see if we can check the type without looking at the model.
     % If that does not work, check the model
-    if ~isempty(node.Parameters) && any(strcmp({node.Parameters.Name}, 'BlockType'))
+    if isStateflow(node)
+        type = 'stateflow';
+    elseif strcmp(node.Name, 'Comparison Root') && isempty(node.Parent)
+        type = 'unknown'; % Tree artifact
+    elseif ~isempty(node.Parameters) && any(strcmp({node.Parameters.Name}, 'BlockType'))
       type = 'block';
     elseif isBlockDiagram(node)
         type = 'block_diagram';

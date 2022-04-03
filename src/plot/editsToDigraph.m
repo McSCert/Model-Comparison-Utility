@@ -21,7 +21,7 @@ function D = editsToDigraph(root)
     D.Nodes.Label = nodes;
 end
 
-function [source, target, nodes] = createSourceTarget(root)
+function [source, target, nodes] = createSourceTarget(root, varargin)
 % CREATESOURCETARGET Get the directed graph edges as (source, target) pairs for
 %   a comparison tree.
 %   (See www.mathworks.com/help/matlab/ref/digraph.html#mw_26035adf-ff90-4a33-a8f8-42048d7e39a6)
@@ -34,17 +34,23 @@ function [source, target, nodes] = createSourceTarget(root)
 %       target   Cell array of target nodes.
 %       nodes    Cell array of node labels.
     
+    % Handle input
+    omitParam = lower(getInput('OmitParam', varargin, 'on'));
+    
+    % Initialize
     source = {};
     target = {};
     nodes  = {};
     
     % Add the root node
-    source{end+1} = 'Edits';
+    nodes{end+1}  = 'Edits';
+    
     source{end+1} = 'Edits';
     target{end+1} = 'Comparison Root (before)';
-    target{end+1} = 'Comparison Root (after)';
-    nodes{end+1}  = 'Edits';
     nodes{end+1}  = 'Comparison Root (before}';
+     
+    source{end+1} = 'Edits';
+    target{end+1} = 'Comparison Root (after)';
     nodes{end+1}  = 'Comparison Root (after}';
         
     % Before
@@ -60,9 +66,12 @@ function [source, target, nodes] = createSourceTarget(root)
             suffix = ' (before)';
             
             for k = 1:length(children)
-                source{end+1} = [parent suffix];
-                target{end+1} = [getPathTree(children(k)) suffix];
-                nodes{end+1}  = char(children(k).Name);
+                if strcmp(omitParam, 'off') || ...
+                    (strcmp(omitParam, 'on') && (~strcmp(getNodeType(children(k)), 'unknown') || children(k).Edited == 1))
+                    source{end+1} = [parent suffix];
+                    target{end+1} = [getPathTree(children(k)) suffix];
+                    nodes{end+1}  = char(children(k).Name);
+                end
             end
         end
     end
@@ -79,9 +88,12 @@ function [source, target, nodes] = createSourceTarget(root)
             suffix = ' (after)';
             
             for k = 1:length(children)
-                source{end+1} = [parent suffix];
-                target{end+1} = [getPathTree(children(k)) suffix];
-                nodes{end+1}  = char(children(k).Name);
+                if strcmp(omitParam, 'off') || ...
+                    (strcmp(omitParam, 'on') && (~strcmp(getNodeType(children(k)), 'unknown') || children(k).Edited == 1))
+                    source{end+1} = [parent suffix];
+                    target{end+1} = [getPathTree(children(k)) suffix];
+                    nodes{end+1}  = char(children(k).Name);
+                end
             end
         end
     end

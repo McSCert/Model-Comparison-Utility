@@ -1,7 +1,7 @@
 function path = getPath(node, sys)
 % GETPATH Get the path of a node in a model. Note: Not all elements in a
-%   model have a Path parameter (e.g. lines, annotations). If an empty cell
-%   array is returned, no valid path has been found.
+%   model have a Path parameter (e.g. lines, annotations, Sateflow transitions). 
+%   If an empty cell array is returned, no valid path has been found.
 % 
 %   Inputs:
 %       node    xmlcomp.Node object, representing a block.
@@ -24,6 +24,9 @@ function path = getPath(node, sys)
     end
 
     sys = char(sys);
+    if isStateflow(node)
+        node = getStateflowParent(node);
+    end
     path = assemblePath(sys, node);
     
     % Address R2016b bug
